@@ -14,12 +14,7 @@ public class Main {
         if (args.length < 1) {
             System.exit(666);
         }
-        Signal.handle(new Signal("SIGINT"), new SignalHandler() {
-            @Override
-            public void handle(Signal sig) {
 
-            }
-        })
         var numThreads = Integer.parseInt(args[0]);
 
         var tasks = new ArrayList<FutureTask<Double>>();
