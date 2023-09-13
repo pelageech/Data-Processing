@@ -1,14 +1,11 @@
 package ru.nsu.ablaginin;
 
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
-
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 public class Main {
-    private static final int ITER = 200000000;
+    private static final long ITER = 100000000;
 
     public static void main(String[] args) {
         if (args.length < 1) {
@@ -20,7 +17,7 @@ public class Main {
         var tasks = new ArrayList<FutureTask<Double>>();
         for (int i = 0; i < numThreads; i++) {
             tasks.add(new FutureTask<>(new PiCalc(i+1, numThreads, ITER)));
-            tasks.get(i).run();
+            (new Thread(tasks.get(i))).start();
         }
 
         var pi = 0.;
