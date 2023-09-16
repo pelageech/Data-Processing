@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 public class Main {
-    private static final long ITER = 100000000;
+    private static final long ITER = 1000000000;
 
     public static void main(String[] args) {
         if (args.length < 1) {
