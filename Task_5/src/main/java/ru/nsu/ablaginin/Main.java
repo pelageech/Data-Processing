@@ -1,15 +1,20 @@
 package ru.nsu.ablaginin;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class Main {
     public static void main(String[] args) {
         var th = new Printer();
 
+        Timer timer = new Timer();
+
         th.start();
-        try {
-            th.join(2000);
-        } catch (InterruptedException e) {
-            System.out.println(e.getMessage());
-        }
-        th.interrupt();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                th.interrupt();
+            }
+        }, 2000);
     }
 }
