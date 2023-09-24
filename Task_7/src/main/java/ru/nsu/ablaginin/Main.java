@@ -1,8 +1,8 @@
 package ru.nsu.ablaginin;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import java.util.List;
+import java.util.concurrent.*;
 
 public class Main {
     private static final long ITER = 1000000000;
@@ -13,24 +13,29 @@ public class Main {
         }
 
         var numThreads = Integer.parseInt(args[0]);
+        var executor = Executors.newFixedThreadPool(numThreads);
+        List<Future<Double>> tasks = new ArrayList<>();
 
-        var tasks = new ArrayList<FutureTask<Double>>();
         for (int i = 0; i < numThreads; i++) {
-            tasks.add(new FutureTask<>(new PiCalc(i+1, numThreads, ITER)));
-            (new Thread(tasks.get(i))).start();
+            var task = new PiCalc(i+1, numThreads, ITER);
+            var future = executor.submit(task);
+            tasks.add(future);
         }
 
         var pi = 0.;
-        try {
-            for (var d : tasks) {
-                pi += d.get();
+        for (var fut : tasks) {
+            try {
+                pi += fut.get();
+            } catch (ExecutionException | InterruptedException e) {
+                System.out.println(e.getMessage());
             }
-        } catch (InterruptedException | ExecutionException e) {
-            System.out.println(e.getMessage());
         }
 
-        System.out.println("My Pi is " + pi*4);
+        pi *= 4;
+
+        System.out.println("My Pi is " + pi);
         System.out.println("Mt pi is " + Math.PI);
-        System.out.println("Delta is " + (Math.PI - pi*4));
+        System.out.println("Delta is " + (Math.PI - pi));
+        executor.shutdown();
     }
 }
