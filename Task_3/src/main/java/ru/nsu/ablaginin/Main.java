@@ -1,15 +1,22 @@
 package ru.nsu.ablaginin;
 
 public class Main {
-    public static void main(String[] args) {
-        var th1 = new Printer("Privet1", "Vsem1", "Ya1", "Nitka1", "Jaba");
-        var th2 = new Printer("Privet2", "Vsem2", "Ya2", "Nitka2", "Teraria");
-        var th3 = new Printer("Privet3", "Vsem3", "Ya3", "Nitka3", "Moloko");
-        var th4 = new Printer("Privet4", "Vsem4", "Ya4", "Nitka4", "Yabloko");
-
+    static String s = "Thread 1: Hello!";
+    public static void main(String[] args) throws InterruptedException {
+        var th1 = new Thread(() -> Printer.print(s));
         th1.start();
+        th1.join();
+        s = "Thread 2: Hello!";
+        var th2 = new Thread(() -> Printer.print(s));
         th2.start();
+        th2.join();
+        s = "Thread 3: Hello!";
+        var th3 = new Thread(() -> Printer.print(s));
         th3.start();
+        th3.join();
+        s = "Thread 4: Hello!";
+        var th4 = new Thread(() -> Printer.print(s));
         th4.start();
+        th4.join();
     }
 }
