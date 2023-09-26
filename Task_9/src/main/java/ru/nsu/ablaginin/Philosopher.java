@@ -1,6 +1,5 @@
 package ru.nsu.ablaginin;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +35,7 @@ public class Philosopher extends Thread{
         }
     }
 
-    public void takeForks() throws InterruptedException {
+    public synchronized void takeForks() throws InterruptedException {
         left.take();
         right.take();
     }
