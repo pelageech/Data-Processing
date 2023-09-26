@@ -28,7 +28,7 @@ public final class Company {
         return departments.size();
     }
     /**
-     * @param index Индекс для текущего свободного отдела.
+     * @param index Iндекс для текущего свободного отдела.
      * @return Свободный отдел для симуляции выполнения работы.
      */
     public Department getFreeDepartment(final int index) {
