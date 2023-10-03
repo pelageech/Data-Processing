@@ -1,8 +1,12 @@
 package ru.nsu.ablaginin;
 
+import java.util.Arrays;
+
 public class Printer {
-    public synchronized void print(String message) {
-        var m = String.valueOf(message);
-        System.out.println(m);
+    public synchronized void print(String[] message) {
+        synchronized (message) {
+            System.out.println(Arrays.stream(message).toList());
+            message.notify();
+        }
     }
 }
