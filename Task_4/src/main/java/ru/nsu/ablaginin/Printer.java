@@ -1,17 +1,20 @@
 package ru.nsu.ablaginin;
 
-public class Printer extends Thread {
-    private boolean running = true;
+import java.util.concurrent.TimeUnit;
 
-    @Override
-    public void interrupt() {
-        running = false;
-    }
+public class Printer extends Thread {
+    public static final int tout = 333;
 
     @Override
     public void run() {
-        for (long i = 0; running; i++) {
-            System.out.println("Message " + i);
+        try {
+            for (long i = 0; ; i++) {
+                TimeUnit.MILLISECONDS.sleep(tout);
+                System.out.println("Message " + i);
+            }
+        } catch (InterruptedException ignored) {
+
         }
+        System.out.println("INTERRUPTED");
     }
 }

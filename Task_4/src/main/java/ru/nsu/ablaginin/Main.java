@@ -1,20 +1,15 @@
 package ru.nsu.ablaginin;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
         var th = new Printer();
-
-        Timer timer = new Timer();
+        var e = Executors.newSingleThreadScheduledExecutor();
 
         th.start();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                th.interrupt();
-            }
-        }, 2000);
+        e.schedule(th::interrupt, 2, TimeUnit.SECONDS);
+        e.shutdown();
     }
 }
