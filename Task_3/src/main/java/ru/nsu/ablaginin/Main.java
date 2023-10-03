@@ -5,14 +5,23 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         var Printer = new Printer();
         var th1 = new Thread(() -> Printer.print(s));
+        synchronized (s) {
             th1.start();
-        s[0] = "B";
+            s.wait();
+        }
+        s[0] = "Q";
         var th2 = new Thread(() -> Printer.print(s));
+        synchronized (s) {
             th2.start();
-        s[1] = "C";
+            s.wait();
+        }
+        s[1] = "W";
         var th3 = new Thread(() -> Printer.print(s));
+        synchronized (s) {
             th3.start();
-        s[2] = "D";
+            s.wait();
+        }
+        s[2] = "E";
         var th4 = new Thread(() -> Printer.print(s));
         th4.start();
     }
