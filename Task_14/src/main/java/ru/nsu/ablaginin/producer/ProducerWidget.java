@@ -6,9 +6,9 @@ import ru.nsu.ablaginin.product.C;
 import ru.nsu.ablaginin.product.Widget;
 
 public class ProducerWidget extends Producer<Widget>{
-    private Storage<A> storageA;
-    private Storage<B> storageB;
-    private Storage<C> storageC;
+    private final Storage<A> storageA;
+    private final Storage<B> storageB;
+    private final Storage<C> storageC;
     private int id = 0;
     public ProducerWidget(
             Storage<Widget> storage, 

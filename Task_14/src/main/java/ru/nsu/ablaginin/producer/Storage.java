@@ -4,7 +4,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class Storage<T> {
-    private BlockingDeque<T> storage = new LinkedBlockingDeque<>();
+    private final BlockingDeque<T> storage = new LinkedBlockingDeque<>();
 
     public void put(T t) throws InterruptedException {
         storage.putLast(t);
