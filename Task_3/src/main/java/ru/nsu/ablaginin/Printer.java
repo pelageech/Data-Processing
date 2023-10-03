@@ -1,14 +1,16 @@
 package ru.nsu.ablaginin;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Printer {
-    public synchronized void print(String[] message) {
-        String[] m;
-        m = message.clone();
-        for (int i = 0; i < m.length; i++) {
-            m[i] = String.valueOf(m[i]);
-        }
-        System.out.println(Arrays.stream(message).toList());
+public class Printer extends Thread{
+
+    private final List<String> strings = new ArrayList<>();
+    public Printer(List<String> strs) {
+        strs.stream().map(String::valueOf).forEach(strings::add);
+    }
+    @Override
+    public void run() {
+        System.out.println(strings);
     }
 }
