@@ -12,13 +12,13 @@ public class Printer extends Thread {
     }
     @Override
     public void run() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 10; i < 20; i++) {
             try {
                 s2.acquire();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println(i);
+            System.out.println("Child: " + i);
             s1.release();
         }
     }

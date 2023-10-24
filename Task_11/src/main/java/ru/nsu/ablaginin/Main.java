@@ -9,13 +9,13 @@ public class Main {
         var th = new Printer(s1, s2);
         th.start();
 
-        for (int i = 10; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             try {
                 s1.acquire();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println(i);
+            System.out.println("Parent: " + i);
             s2.release();
         }
     }
