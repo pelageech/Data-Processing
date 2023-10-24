@@ -15,5 +15,6 @@ public class ProducerB extends Producer<B>{
     public void produce() throws InterruptedException {
         TimeUnit.SECONDS.sleep(TIME);
         put(new B(id++));
+        System.out.printf("Produced B (id=%d)\n", id-1);
     }
 }

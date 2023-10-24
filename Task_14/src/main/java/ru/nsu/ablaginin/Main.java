@@ -27,7 +27,7 @@ public class Main {
         var printer = new Thread(() -> {
             for (;;) {
                 try {
-                    System.out.println(widgetStorage.take().id());
+                    System.out.printf("Produced widget (id=%d)\n", widgetStorage.take().id());
                 } catch (InterruptedException e) {
                     break;
                 }
@@ -41,6 +41,5 @@ public class Main {
         c.interrupt();
         widget.interrupt();
         printer.interrupt();
-        System.out.println(aStorage);
     }
 }
