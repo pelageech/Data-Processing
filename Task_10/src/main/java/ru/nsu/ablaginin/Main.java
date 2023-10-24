@@ -6,7 +6,7 @@ public class Main {
         var th = new Printer(cubbyHole);
         th.start();
 
-        for (int i = 10; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             cubbyHole.printFirst(String.valueOf(i));
         }
     }

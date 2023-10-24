@@ -1,7 +1,7 @@
 package ru.nsu.ablaginin;
 
 public class CubbyHole {
-    private boolean available = false;
+    private boolean available = true;
     public synchronized void printSecond(String s) {
         while (available) {
             try {
@@ -9,7 +9,7 @@ public class CubbyHole {
             } catch (InterruptedException ignored) {
             }
         }
-        System.out.println("first: " + s);
+        System.out.println("Child: " + s);
         available = true;
         notifyAll();
     }
@@ -21,7 +21,7 @@ public class CubbyHole {
             } catch (InterruptedException ignored) {
             }
         }
-        System.out.println("second: " + s);
+        System.out.println("Parent: " + s);
         available = false;
         notifyAll();
     }
