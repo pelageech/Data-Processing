@@ -37,12 +37,16 @@ public class Philosopher extends Thread{
 
     public synchronized void takeForks() throws InterruptedException {
         left.take();
+        System.out.println("Philosopher " + name + " took left fork");
         right.take();
+        System.out.println("Philosopher " + name + " took right fork");
     }
 
     public void putForks() {
         left.put();
+        System.out.println("Philosopher " + name + " put left fork");
         right.put();
+        System.out.println("Philosopher " + name + " put right fork");
     }
 
     @Override
