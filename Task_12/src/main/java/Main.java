@@ -1,7 +1,4 @@
-import java.util.LinkedList;
-import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
@@ -14,16 +11,24 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
         for (;;) {
-            String s = scanner.nextLine();
-            if (s.equals(":exit")) {
+            String next= scanner.nextLine();
+            if (next.equals(":exit")) {
                 System.out.println("Exiting...");
                 timer.cancel();
                 break;
             }
 
             synchronized (list) {
-                list.add(s);
+                list.addAll(split(next));
             }
         }
+    }
+
+    private static List<String> split(String s) {
+        List<String> l = new ArrayList<>();
+        for (int i = 0; i <= s.length() / 80; i++) {
+            l.add(s.substring(i*80, Math.min((i + 1) * 80, s.length())));
+        }
+        return l;
     }
 }
