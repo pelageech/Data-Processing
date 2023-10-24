@@ -3,6 +3,8 @@ package ru.nsu.ablaginin;
 import sun.misc.Signal;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -19,6 +21,9 @@ public class Main {
         Signal.handle(signal, sig -> picalc.stop());
 
         Double pi = 0.;
+        var execSigINT = Executors.newSingleThreadScheduledExecutor();
+        execSigINT.schedule(() -> Signal.raise(signal), 10, TimeUnit.SECONDS);
+
         try {
             pi = picalc.start();
         } catch (ExecutionException | InterruptedException e) {
@@ -28,5 +33,6 @@ public class Main {
         System.out.println("My Pi is " + pi);
         System.out.println("Mt pi is " + Math.PI);
         System.out.println("Delta is " + (Math.PI - pi));
+        execSigINT.shutdown();
     }
 }
