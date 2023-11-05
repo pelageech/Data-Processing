@@ -1,20 +1,20 @@
 import java.util.*;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
         LinkedList<String> list = new LinkedList<>();
 
-        TimerTask timerTask = new Sort(list);
-        Timer timer = new Timer();
-        timer.schedule(timerTask, 0, TimeUnit.SECONDS.toMillis(5));
+        var exec = Executors.newSingleThreadScheduledExecutor();
+        exec.scheduleWithFixedDelay(new Sort(list),0, 5, TimeUnit.SECONDS);
 
         Scanner scanner = new Scanner(System.in);
         for (;;) {
             String next= scanner.nextLine();
             if (next.equals(":exit")) {
                 System.out.println("Exiting...");
-                timer.cancel();
+                exec.shutdown();
                 break;
             }
 
