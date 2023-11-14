@@ -27,7 +27,7 @@ public class Main {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest
             .newBuilder()
-            .version(HttpClient.Version.HTTP_2)
+            .version(HttpClient.Version.HTTP_1_1)
             .uri(URI.create(requestURL))
             .build();
 
