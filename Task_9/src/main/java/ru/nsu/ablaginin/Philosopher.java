@@ -35,6 +35,11 @@ public class Philosopher extends Thread{
         }
     }
 
+    // synchronized guarantees that there won't be deadlocks
+    // because the only one phil can take forks in the same time.
+    //
+    // In other words, the only one phil can be in process BETWEEN taking
+    // a left fork and taking a right fork.
     public synchronized void takeForks() throws InterruptedException {
         left.take();
         System.out.println("Philosopher " + name + " took left fork");
