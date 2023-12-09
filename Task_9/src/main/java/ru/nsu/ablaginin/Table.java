@@ -4,20 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Table {
-    private final List<Fork> forks = new ArrayList<>(5);
-    private final List<Philosopher> philosophers = new ArrayList<>(5);
+    public static final int CAPACITY = 5;
+    private final List<Fork> forks = new ArrayList<>(CAPACITY);
+    private final List<Philosopher> philosophers = new ArrayList<>(CAPACITY);
 
     public Table() {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < CAPACITY; i++) {
             forks.add(new Fork());
         }
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < CAPACITY; i++) {
             philosophers.add(new Philosopher(
                     "Phil " + i,
                     4,
                     forks.get(i),
-                    forks.get((i+1) % 5)
+                    forks.get((i+1) % CAPACITY)
             ));
         }
     }
