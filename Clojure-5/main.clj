@@ -1,73 +1,73 @@
 (ns main)
 
-(def tryTakeForkTimes (atom 0))
+(def try-take-fork-times (atom 0))
 
-(defn Fork []
-  (ref {:inUse 0 :timesUsed 0}
-       :validator (fn [state] (and (>= (state :inUse) 0) (<= (state :inUse) 1)))))
+(defn fork []
+  (ref {:in-use 0 :times-used 0}
+       :validator (fn [state] (and (>= (state :in-use) 0) (<= (state :in-use) 1)))))
 
-(defn takeFork [fork]
+(defn take-fork [fork]
   (dosync
-   (swap! tryTakeForkTimes inc)
-   (alter fork (fn [state] (update (update state :inUse inc) :timesUsed inc)))))
+   (swap! try-take-fork-times inc)
+   (alter fork (fn [state] (update (update state :in-use inc) :times-used inc)))))
 
-(defn putFork [fork]
+(defn put-fork [fork]
   (dosync
-   (alter fork (fn [state]  (update state :inUse dec)))))
+   (alter fork (fn [state]  (update state :in-use dec)))))
 
-(defn take-forks [leftFork rightFork]
+(defn take-forks [left-fork right-fork]
   (if
    (nil?
     (try
-      (takeFork leftFork)
+      (take-fork left-fork)
       (catch IllegalStateException _ nil)))
-    (recur leftFork rightFork)
+    (recur left-fork right-fork)
     (if
      (nil?
       (try
-        (takeFork rightFork)
+        (take-fork right-fork)
         (catch IllegalStateException _ nil)))
       (do
-        (putFork leftFork)
-        (recur leftFork rightFork))
+        (put-fork left-fork)
+        (recur left-fork right-fork))
       nil)))
 
 (defn philosopher
-  [thinkingTime diningTime leftFork rightFork id times eaten]
+  [thinking-time dining-time left-fork right-fork id times eaten]
   (new Thread
        (fn []
          (println (str "Philosopher " id " is thinking..."))
-         (Thread/sleep thinkingTime)
+         (Thread/sleep thinking-time)
          (println (str "Philosopher " id " is trying to take forks..."))
-         (take-forks leftFork rightFork)
+         (take-forks left-fork right-fork)
          (println (str "Philosopher " id " is eating..."))
-         (Thread/sleep diningTime)
+         (Thread/sleep dining-time)
          (swap! (nth eaten id) inc)
-         (putFork leftFork)
-         (putFork rightFork)
+         (put-fork left-fork)
+         (put-fork right-fork)
          (println (str "Philosopher " id " is putting forks..."))
          (if (>= times @(nth eaten id))
            (recur)
            nil))))
 
-(defn startLunch [philCount thinkingTime diningTime lunchCount]
-  (let [forks (map (fn [_] (Fork)) (range philCount))
-        lunchEaten (map (fn [_] (atom 0)) (range philCount))
-        leftFork (fn [philId] (nth forks philId))
-        rightFork (fn [philId] (nth forks (mod (inc philId) philCount)))
+(defn start-lunch [phil-count thinking-time dining-time lunch-count]
+  (let [forks (map (fn [_] (fork)) (range phil-count))
+        lunch-eaten (map (fn [_] (atom 0)) (range phil-count))
+        left-fork (fn [phil-id] (nth forks phil-id))
+        right-fork (fn [phil-id] (nth forks (mod (inc phil-id) phil-count)))
         philosophers (map
-                      (fn [philId]
+                      (fn [phil-id]
                         (philosopher
-                         thinkingTime
-                         diningTime
-                         (leftFork philId)
-                         (rightFork philId)
-                         philId
-                         lunchCount
-                         lunchEaten))
-                      (range philCount))]
+                         thinking-time
+                         dining-time
+                         (left-fork phil-id)
+                         (right-fork phil-id)
+                         phil-id
+                         lunch-count
+                         lunch-eaten))
+                      (range phil-count))]
     (run! #(.start %) philosophers)
     (time (run! #(.join %) philosophers))
-    (println (str "Transaction restart times: " @tryTakeForkTimes))))
+    (println (str "Transaction restart times: " @try-take-fork-times))))
 
-(startLunch 4 100 100 10)
+(start-lunch 4 100 100 10)
