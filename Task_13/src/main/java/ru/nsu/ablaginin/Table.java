@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Table {
-    public static final int CAPACITY = 6;
+    public static final int CAPACITY = 5;
     private final List<Fork> forks = new ArrayList<>(CAPACITY);
     private final List<Philosopher> philosophers = new ArrayList<>(CAPACITY);
 

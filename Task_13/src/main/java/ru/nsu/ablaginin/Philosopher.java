@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 public class Philosopher extends Thread{
     private static AtomicInteger countEating = new AtomicInteger(0);
-    private static final Object forks = new Object();
     private final Fork left;
     private final Fork right;
     private static AtomicInteger spaghetti;
@@ -36,52 +35,69 @@ public class Philosopher extends Thread{
         Thread.sleep(
                 TimeUnit.SECONDS.toMillis(1) * ThreadLocalRandom.current().nextInt(3, 5)
         );
+        spaghetti.decrementAndGet();
         countEating.decrementAndGet();
         putForks();
     }
 
     // takeForks returns true, iff forks are taken.
     public boolean takeForks() throws InterruptedException {
-        synchronized (forks) {
-            // while we are waiting, spaghetti could be eaten
-            while (spaghetti.get() > 0) {
-                if (!left.take()) {
-                    forks.wait();
-                    continue;
-                }
-
-                System.out.println(" Philosopher " + name + " took left fork");
-                if (!right.take()) {
-                    left.put();
-                    forks.wait();
-                    continue;
-                }
-                System.out.println("Philosopher " + name + " took right fork");
-
+        byte taken = 0;
+        for (;;) {
+            if (spaghetti.get() <= 0) {
+                return false;
+            } else if (taken == 2) {
                 return true;
             }
-
-            return false;
+            synchronized (left) {
+                if (!left.take()) {
+                    if (taken == 1) {
+                        putRight();
+                        taken--;
+                    }
+                    left.wait();
+                } else {
+                    taken++;
+                }
+            }
+            if (spaghetti.get() <= 0) {
+                return false;
+            } else if (taken == 2) {
+                return true;
+            }
+            synchronized (right) {
+                if (!right.take()) {
+                    if (taken == 1) {
+                        putLeft();
+                        taken--;
+                    }
+                    right.wait();
+                } else {
+                    taken++;
+                }
+            }
         }
     }
 
     private void putForks() {
-        synchronized (forks) {
-            putLeft();
-            putRight();
-        }
+        putLeft();
+        putRight();
     }
 
     private void putLeft() {
-        left.put();
-        forks.notifyAll();
+        synchronized (left) {
+            left.put();
+            left.notify();
+        }
         System.out.println("Philosopher " + name + " put left fork");
     }
 
     private void putRight() {
-        right.put();
-        forks.notifyAll();
-        System.out.println("Philosopher " + name + " put left fork");
+        synchronized (right) {
+            right.put();
+            right.notify();
+        }
+        System.out.println("Philosopher " + name + " put right fork");
     }
 
     @Override
