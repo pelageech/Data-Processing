@@ -43,6 +43,7 @@ public class Philosopher extends Thread{
     // takeForks returns true, iff forks are taken.
     public boolean takeForks() throws InterruptedException {
         byte taken = 0;
+
         for (;;) {
             if (spaghetti.get() <= 0) {
                 return false;
@@ -50,15 +51,14 @@ public class Philosopher extends Thread{
                 return true;
             }
             synchronized (left) {
-                if (!left.take()) {
+                while (!left.take()) {
                     if (taken == 1) {
                         putRight();
                         taken--;
                     }
                     left.wait();
-                } else {
-                    taken++;
                 }
+                taken++;
             }
             if (spaghetti.get() <= 0) {
                 return false;
@@ -66,15 +66,14 @@ public class Philosopher extends Thread{
                 return true;
             }
             synchronized (right) {
-                if (!right.take()) {
+                while (!right.take()) {
                     if (taken == 1) {
                         putLeft();
                         taken--;
                     }
                     right.wait();
-                } else {
-                    taken++;
                 }
+                taken++;
             }
         }
     }
