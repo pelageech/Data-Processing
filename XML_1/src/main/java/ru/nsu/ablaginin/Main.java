@@ -18,10 +18,5 @@ public class Main {
         writer.append(new PeopleParserProcessor(input)
                 .parse().toString());
         writer.close();
-//
-//        new PeopleParserProcessor(new FileInputStream(file))
-//                .parse()
-        //.forEach(System.out::println)
-        ;
     }
 }

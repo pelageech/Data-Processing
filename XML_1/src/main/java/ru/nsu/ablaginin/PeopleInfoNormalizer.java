@@ -78,7 +78,6 @@ public class PeopleInfoNormalizer {
         }
 
         System.out.println("Normalized!!!");
-        System.out.println("Temp buffer size: " + temp_records.size());
 
         childrenAssertion(id_records);
         siblingsAssertion(id_records);
