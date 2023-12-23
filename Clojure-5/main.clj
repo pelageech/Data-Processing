@@ -4,12 +4,17 @@
 
 (defn fork []
   (ref {:in-use 0 :times-used 0}
-       :validator (fn [state] (and (>= (state :in-use) 0) (<= (state :in-use) 1)))))
+       :validator (fn [state] (and (>= (state :in-use) 0) (<= (state :in-use) 1)))
+       ))
 
 (defn take-fork [fork]
   (dosync
    (swap! try-take-fork-times inc)
-   (alter fork (fn [state] (update (update state :in-use inc) :times-used inc)))))
+   (alter fork (fn [state] (update state :in-use inc)))
+   (alter fork (fn [state] (update state :times-used inc)))
+   )
+   (swap! try-take-fork-times dec) ; убираем количесвто успешных транзакций
+  )
 
 (defn put-fork [fork]
   (dosync
@@ -46,7 +51,7 @@
          (put-fork left-fork)
          (put-fork right-fork)
          (println (str "Philosopher " id " is putting forks..."))
-         (if (>= times @(nth eaten id))
+         (if (> times @(nth eaten id))
            (recur)
            nil))))
 
@@ -68,6 +73,9 @@
                       (range phil-count))]
     (run! #(.start %) philosophers)
     (time (run! #(.join %) philosophers))
-    (println (str "Transaction restart times: " @try-take-fork-times))))
+    (println forks)
+    ))
 
-(start-lunch 4 100 100 10)
+(start-lunch 5 100 100 5)
+
+(println (str "Transaction restart times: " @try-take-fork-times))
