@@ -36,6 +36,7 @@ public class PeopleInfoNormalizer {
         temp_records = new ArrayList<>();
 
         for (PersonInfo p : data) {
+            // find and merge people with the same first and last (family) name
             List<PersonInfo> found = findInRecords(x -> Optional.of(x)
                             .map(PersonInfo::getFirstName)
                             .map(v -> v.equals(p.getFirstName()))
@@ -46,6 +47,7 @@ public class PeopleInfoNormalizer {
                                     .orElse(false),
                     id_records.values());
             if (found.size() == 1) {
+                // put merged info into id_records
                 PersonInfo foundPerson = found.get(0);
                 foundPerson.merge(p);
                 id_records.replace(foundPerson.getId(), foundPerson);
@@ -144,8 +146,6 @@ public class PeopleInfoNormalizer {
                     } else if (pp.getWifeName() != null || pp.getWifeId() != null) {
                         p.setGender("female");
                     }
-                } else {
-                    p.setGender("male");
                 }
             }
         }
