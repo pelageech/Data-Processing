@@ -110,12 +110,6 @@ public class PeopleParserProcessor implements AutoCloseable {
             reader.next();
             String text = reader.getText();
             if (validateFieldValue(text)) consumer.accept(text);
-        } else {
-            reader.next();
-            if (reader.hasText()) {
-                String text = reader.getText();
-                if (validateFieldValue(text)) consumer.accept(text);
-            }
         }
     }
 
