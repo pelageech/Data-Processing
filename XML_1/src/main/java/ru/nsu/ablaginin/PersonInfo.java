@@ -66,6 +66,7 @@ public class PersonInfo {
     private Set<String> parentsIds = new HashSet<>();
     private Set<String> parentsNames = new HashSet<>();
 
+    // merge p into THIS
     public void merge(PersonInfo p) {
         if (p == null)
             return;

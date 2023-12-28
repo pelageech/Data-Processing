@@ -96,9 +96,9 @@ public class PeopleParserProcessor implements AutoCloseable {
                 switch (reader.getAttributeLocalName(i)) {
                     case "id", "val", "value" -> {
                         String attributeValue = reader.getAttributeValue(i);
-                        if (!attributeValue.equals("NONE") &&
-                                !attributeValue.equals("UNKNOWN") &&
-                                !attributeValue.isBlank()) {
+                        if (!attributeValue.trim().equals("NONE") &&
+                                !attributeValue.trim().equals("UNKNOWN") &&
+                                !attributeValue.trim().isBlank()) {
                             consumer.accept(reader.getAttributeValue(i));
                         }
                     }
