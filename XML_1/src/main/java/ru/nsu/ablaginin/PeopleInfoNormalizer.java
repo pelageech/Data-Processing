@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 public class PeopleInfoNormalizer {
 
     public ArrayList<PersonInfo> normalize(List<PersonInfo> data, Integer peopleCount) {
+        System.out.println("Tags parsed: -> " + data.size());
         HashMap<String, PersonInfo> id_records = new HashMap<>();
         ArrayList<PersonInfo> temp_records = new ArrayList<>();
 
@@ -26,6 +27,7 @@ public class PeopleInfoNormalizer {
             }
         }
 
+        System.out.println(temp_records.size());
         // check that number of ids is equal to number of people
         assert id_records.size() == peopleCount;
         // check that all id records have both first and last names
@@ -78,7 +80,7 @@ public class PeopleInfoNormalizer {
                 }
             }
         }
-
+        System.out.println(temp_records.size());
         System.out.println("Normalized!!!");
 
         childrenAssertion(id_records);
