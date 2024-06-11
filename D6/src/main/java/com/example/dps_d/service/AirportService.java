@@ -13,6 +13,7 @@ import com.example.dps_d.entity.Booking;
 import com.example.dps_d.entity.Flight;
 import com.example.dps_d.entity.Ticket;
 import com.example.dps_d.entity.TicketFlight;
+import com.example.dps_d.exception.ClientException;
 import com.example.dps_d.repository.AircraftRepository;
 import com.example.dps_d.repository.AirportRepository;
 import com.example.dps_d.repository.BoardingPassRepository;
@@ -40,7 +41,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @RequiredArgsConstructor
@@ -308,7 +308,19 @@ public class AirportService {
                 .stream().reduce(0F, Float::sum);
 
         if (prices.values().stream().anyMatch(v -> v.equals(0F))) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Полет не найден");
+            throw ClientException.of(HttpStatus.NOT_FOUND, "Полет не найден");
+        }
+
+        List<Long> flightIds = flights.stream().map(Flight::getId).toList();
+
+        Booking existingBooking = bookingRepository.findBooking(flightIds);
+
+        if (existingBooking != null) {
+            List<TicketFlight> ticketFlights = ticketFlightRepository.findByBookRef(existingBooking.getBookRef());
+
+            return new BookingsResponseDto()
+                    .setTicketFlights(ticketFlights)
+                    .setBookRef(existingBooking.getBookRef());
         }
 
         String bookRef = "_" + UUID.randomUUID().toString().substring(0, 5);
@@ -360,13 +372,13 @@ public class AirportService {
 
     private void validateFlight(List<Flight> flights, List<Long> flightData) {
         if (flightData.size() != flights.size()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Полет не найден");
+            throw ClientException.of(HttpStatus.NOT_FOUND, "Полет не найден");
         }
 
 //        flights.forEach(f -> {
 //            switch (f.getStatus()) {
 //                case "Arrived", "On Time" ->
-//                        throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Регистрация на полет закрыта");
+//                        throw ClientException.of(HttpStatus.BAD_REQUEST, "Регистрация на полет закрыта");
 //            }
 //        });
 
@@ -378,7 +390,7 @@ public class AirportService {
 
         List<BoardingPass> existingPasses = boardingPassRepository.findExistingPasses(checkInDto.getBookRef());
         if (!existingPasses.isEmpty()) {
-            return existingPasses;
+            throw ClientException.of(HttpStatus.BAD_REQUEST, "Регистрация уже прошла");
         }
 
         return ticketFlights.stream().map(flight -> {
@@ -390,9 +402,9 @@ public class AirportService {
                     List<String> freeSeats = boardingPassRepository.findFreeSeatsByFlightIdAndFareConditions(
                             flight.getFlightId(), flight.getFareConditions());
 
-//                    if (freeSeats.isEmpty()) {
-//                        throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Нет свободных мест");
-//                    }
+                    if (freeSeats.isEmpty()) {
+                        throw ClientException.of(HttpStatus.BAD_REQUEST, "Нет свободных мест");
+                    }
 
                     String seatNo = freeSeats.get(0);
 
