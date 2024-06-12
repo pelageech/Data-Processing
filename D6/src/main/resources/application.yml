@@ -1,0 +1,13 @@
+#docker run --name dps-postgres -p 5433:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=postgres -v .\demo_small.sql:/docker-entrypoint-initdb.d/init.sql -d fef9862f2291697b1d060bd7b44bc01f9c2813a3a01e5fa929995c6ff5e26a23
+
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/postgres
+    username: postgres
+    password: postgres
+    hikari:
+      schema: bookings
+  application:
+    name: DPS_D
